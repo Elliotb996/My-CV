@@ -1,101 +1,397 @@
-import Image from "next/image";
+"use client";
+import { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [activeSection, setActiveSection] = useState('experience');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Expanded work experience data
+  const experiences = [
+    {
+      title: "Finance Specialist",
+      company: "Charles & Dean Finance",
+      period: "2023 - Present",
+      points: [
+        "Managing high-value vehicle finance portfolio with average deal size of £80K, ranging from standard vehicles to premium supercars",
+        "Analyzing company accounts and financial statements to structure optimal business finance solutions",
+        "Writing comprehensive proposals for underwriters on high-end vehicles and complex business cases",
+        "Building and maintaining relationships with business owners and key decision makers",
+        "Utilizing Salesforce CRM to manage customer relationships and maintain detailed records",
+        "Qualifying customers to match appropriate finance products and lenders to their specific needs",
+        "Structuring deals from £15K retail finance up to multi-million pound supercar transactions",
+        "Recognized as the team's go-to resource for product knowledge and lender expertise"
+      ]
+    },
+    {
+      title: "Sales Development Representative",
+      company: "Charles & Dean Finance",
+      period: "2022 - 2023",
+      points: [
+        "Generated qualified leads through strategic outbound prospecting campaigns",
+        "Managed inbound enquiries and successfully reactivated archived customer data",
+        "Consistently exceeded daily call metrics and lead conversion targets",
+        "Developed strong product knowledge across vehicle finance solutions",
+        "Promoted to Finance Specialist within 6 months due to exceptional performance",
+        "Built foundation of understanding in finance products and lending criteria"
+      ]
+    },
+    {
+      title: "Sales Executive",
+      company: "Volkswagen Peterborough",
+      period: "2016 - 2022",
+      points: [
+        "Achieved consistent sales targets while maintaining 100% FCA compliance standards",
+        "Qualified as accredited Volkswagen sales executive within first two years",
+        "Selected for elite 8-person central sales team during pandemic, managing sales across 13 dealerships",
+        "Maintained 100% customer satisfaction ratings through comprehensive needs analysis",
+        "Adapted sales techniques to changing market conditions during pandemic",
+        "Managed remote sales processes across multiple brands including VW, Audi, SEAT, and Skoda"
+      ]
+    }
+  ];
+
+  // Education data
+  const education = [
+    {
+      institution: "Peterborough Regional College",
+      period: "2013 - 2015",
+      qualification: "Level 3 BTEC National Extended Diploma in ICT & Business",
+      details: "Focused on business systems, database management, and IT infrastructure"
+    },
+    {
+      institution: "Arthur Mellows Village College",
+      period: "2008 - 2013",
+      qualification: "GCSE Qualifications",
+      grades: [
+        "Mathematics (B)",
+        "English Language (B)",
+        "BTEC Business Diploma (Double Distinction)",
+        "Science Double Award (B)",
+        "English Literature (C)",
+        "History (C)",
+        "Religious Studies (B)",
+        "Graphics (C)",
+        "Physical Education (B)"
+      ]
+    }
+  ];
+
+  // Technical skills data
+  const skills = {
+    finance: [
+      { name: "Financial Analysis", level: "Advanced" },
+      { name: "Business Finance", level: "Advanced" },
+      { name: "Vehicle Finance", level: "Expert" },
+      { name: "Sales Force CRM", level: "Advanced" },
+      { name: "Compliance (FCA)", level: "Expert" }
+    ],
+    web3: [
+      { name: "DeFi Protocols", level: "Intermediate" },
+      { name: "Crypto Trading", level: "Advanced" },
+      { name: "Community Management", level: "Intermediate" },
+      { name: "Market Analysis", level: "Advanced" }
+    ],
+    technical: [
+      { name: "Google Workspace", level: "Advanced" },
+      { name: "CRM Systems", level: "Expert" },
+      { name: "Data Analysis", level: "Intermediate" },
+      { name: "Microsoft Office", level: "Advanced" }
+    ]
+  };
+
+  // Contact form handler
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    // Add your form submission logic here
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <header className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div className="container mx-auto px-6 py-32">
+          <h1 className="text-5xl font-bold mb-6">Elliot Butler</h1>
+          <p className="text-2xl mb-8 text-gray-100">Strategic Sales & Web3 Professional</p>
+          <div className="flex gap-4">
+            <button 
+              className="bg-white text-blue-600 px-8 py-3 rounded-full font-medium hover:bg-blue-50 transition-colors"
+              onClick={() => setActiveSection('contact')}
+            >
+              Contact Me
+            </button>
+          </div>
         </div>
+      </header>
+
+      {/* Navigation */}
+      <nav className="sticky top-0 bg-white shadow-md z-10">
+        <div className="container mx-auto px-6">
+          <div className="flex space-x-8 py-4">
+            {['Experience', 'Skills', 'Education', 'Web3', 'Contact'].map((section) => (
+              <button 
+                key={section}
+                className={`px-4 py-2 rounded-full transition-colors ${
+                  activeSection === section.toLowerCase() 
+                    ? 'bg-blue-600 text-white' 
+                    : 'text-gray-600 hover:text-blue-600'
+                }`}
+                onClick={() => setActiveSection(section.toLowerCase())}
+              >
+                {section}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* Main content */}
+      <main className="container mx-auto px-6 py-16">
+        {/* Experience Section */}
+        {activeSection === 'experience' && (
+          <div className="space-y-8">
+            <h2 className="text-4xl font-bold text-gray-800 mb-12">Professional Experience</h2>
+            <div className="grid gap-8">
+              {experiences.map((exp, index) => (
+                <div key={index} className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                  <h3 className="text-2xl font-bold text-blue-600">{exp.title}</h3>
+                  <p className="text-gray-600 mb-6">{exp.company} | {exp.period}</p>
+                  <ul className="space-y-3">
+                    {exp.points.map((point, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                        <span className="text-gray-700">{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Skills Section */}
+        {activeSection === 'skills' && (
+          <div>
+            <h2 className="text-4xl font-bold text-gray-800 mb-12">Technical Skills</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <h3 className="text-2xl font-bold text-blue-600 mb-6">Finance</h3>
+                {skills.finance.map((skill, index) => (
+                  <div key={index} className="mb-4">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-gray-700">{skill.name}</span>
+                      <span className="text-blue-600">{skill.level}</span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full">
+                      <div 
+                        className="h-2 bg-blue-600 rounded-full"
+                        style={{ 
+                          width: skill.level === 'Expert' ? '100%' : 
+                                 skill.level === 'Advanced' ? '80%' : '60%' 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <h3 className="text-2xl font-bold text-blue-600 mb-6">Web3</h3>
+                {skills.web3.map((skill, index) => (
+                  <div key={index} className="mb-4">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-gray-700">{skill.name}</span>
+                      <span className="text-blue-600">{skill.level}</span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full">
+                      <div 
+                        className="h-2 bg-blue-600 rounded-full"
+                        style={{ 
+                          width: skill.level === 'Expert' ? '100%' : 
+                                 skill.level === 'Advanced' ? '80%' : '60%' 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <h3 className="text-2xl font-bold text-blue-600 mb-6">Technical</h3>
+                {skills.technical.map((skill, index) => (
+                  <div key={index} className="mb-4">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-gray-700">{skill.name}</span>
+                      <span className="text-blue-600">{skill.level}</span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full">
+                      <div 
+                        className="h-2 bg-blue-600 rounded-full"
+                        style={{ 
+                          width: skill.level === 'Expert' ? '100%' : 
+                                 skill.level === 'Advanced' ? '80%' : '60%' 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Education Section */}
+        {activeSection === 'education' && (
+          <div>
+            <h2 className="text-4xl font-bold text-gray-800 mb-12">Education</h2>
+            <div className="grid gap-8">
+              {education.map((edu, index) => (
+                <div key={index} className="bg-white p-8 rounded-xl shadow-md">
+                  <h3 className="text-2xl font-bold text-blue-600">{edu.institution}</h3>
+                  <p className="text-gray-600 mb-4">{edu.period}</p>
+                  <h4 className="text-xl font-semibold text-gray-800 mb-4">{edu.qualification}</h4>
+                  {edu.details && <p className="text-gray-700 mb-4">{edu.details}</p>}
+                  {edu.grades && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {edu.grades.map((grade, idx) => (
+                        <div key={idx} className="bg-gray-50 p-2 rounded text-gray-700">
+                          {grade}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Web3 Section */}
+        {activeSection === 'web3' && (
+          <div>
+            <h2 className="text-4xl font-bold text-gray-800 mb-12">Web3 Experience</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <h3 className="text-2xl font-bold text-blue-600 mb-4">Trading & Market Analysis</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                    <span className="text-gray-700">Active trader in spot and leverage markets since 2021</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                    <span className="text-gray-700">Experience with DeFi protocols and yield farming strategies</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                    <span className="text-gray-700">NFT trading and market trend analysis</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+<span className="text-gray-700">Coordinated with development teams during project launches</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                    <span className="text-gray-700">Maintained community engagement through market cycles</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                    <span className="text-gray-700">Utilized OSINT techniques for market intelligence gathering</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <h3 className="text-2xl font-bold text-blue-600 mb-4">Technical Understanding</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                    <span className="text-gray-700">Deep understanding of blockchain technology and consensus mechanisms</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                    <span className="text-gray-700">Experience with various DeFi protocols and smart contracts</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                    <span className="text-gray-700">Familiar with different blockchain networks and their ecosystems</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Contact Section */}
+        {activeSection === 'contact' && (
+          <div>
+            <h2 className="text-4xl font-bold text-gray-800 mb-12">Get In Touch</h2>
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2" htmlFor="name">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2" htmlFor="email">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2" htmlFor="message">
+                      Message
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      rows={4}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                      required
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    Send Message
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
