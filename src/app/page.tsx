@@ -1,12 +1,20 @@
 "use client";
+import { useState, useEffect } from 'react';
 import { useForm } from '@formspree/react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 
 export default function Home() {
-  const [formState, handleSubmit] = useForm("mldeojog"); // Replace with
-const [scrollProgress, setScrollProgress] = useState(0);
+  // Initialize all our state variables
+  const [activeSection, setActiveSection] = useState('experience');
+  const [formState, handleSubmit] = useForm("mldeojog"); // Your Formspree form ID
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
 
+  // Handle scroll progress for the progress bar at the top
   useEffect(() => {
     const handleScroll = () => {
       const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -17,7 +25,8 @@ const [scrollProgress, setScrollProgress] = useState(0);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  // Expanded work experience data
+
+  // Define your experience data
   const experiences = [
     {
       title: "Finance Specialist",
@@ -111,13 +120,7 @@ const [scrollProgress, setScrollProgress] = useState(0);
     ]
   };
 
-  // Contact form handler
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add your form submission logic here
-  };
-
+  // Form input change handler
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
@@ -125,15 +128,27 @@ const [scrollProgress, setScrollProgress] = useState(0);
     });
   };
 
+  // Main component render
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Progress bar */}
+      <div className="fixed top-0 left-0 w-full h-1 z-50">
+        <motion.div
+          className="h-full bg-blue-600"
+          style={{
+            scaleX: scrollProgress,
+            transformOrigin: "0%"
+          }}
+        />
+      </div>
+
       {/* Hero Section */}
       <header className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="container mx-auto px-6 py-32">
           <h1 className="text-5xl font-bold mb-6">Elliot Butler</h1>
           <p className="text-2xl mb-8 text-gray-100">Strategic Sales & Web3 Professional</p>
           <div className="flex gap-4">
-            <button 
+            <button
               className="bg-white text-blue-600 px-8 py-3 rounded-full font-medium hover:bg-blue-50 transition-colors"
               onClick={() => setActiveSection('contact')}
             >
@@ -142,25 +157,17 @@ const [scrollProgress, setScrollProgress] = useState(0);
           </div>
         </div>
       </header>
-<div className="fixed top-0 left-0 w-full h-1 z-50">
-  <motion.div 
-    className="h-full bg-blue-600"
-    style={{ 
-      scaleX: scrollProgress,
-      transformOrigin: "0%" 
-    }}
-  />
-</div>
+
       {/* Navigation */}
       <nav className="sticky top-0 bg-white shadow-md z-10">
         <div className="container mx-auto px-6">
           <div className="flex space-x-8 py-4">
             {['Experience', 'Skills', 'Education', 'Web3', 'Contact'].map((section) => (
-              <button 
+              <button
                 key={section}
                 className={`px-4 py-2 rounded-full transition-colors ${
-                  activeSection === section.toLowerCase() 
-                    ? 'bg-blue-600 text-white' 
+                  activeSection === section.toLowerCase()
+                    ? 'bg-blue-600 text-white'
                     : 'text-gray-600 hover:text-blue-600'
                 }`}
                 onClick={() => setActiveSection(section.toLowerCase())}
@@ -175,13 +182,13 @@ const [scrollProgress, setScrollProgress] = useState(0);
       {/* Main content */}
       <main className="container mx-auto px-6 py-16">
         {/* Experience Section */}
-{activeSection === 'experience' && (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-    className="space-y-8"
-  >
+        {activeSection === 'experience' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8"
+          >
             <h2 className="text-4xl font-bold text-gray-800 mb-12">Professional Experience</h2>
             <div className="grid gap-8">
               {experiences.map((exp, index) => (
@@ -199,81 +206,51 @@ const [scrollProgress, setScrollProgress] = useState(0);
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Skills Section */}
         {activeSection === 'skills' && (
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-4xl font-bold text-gray-800 mb-12">Technical Skills</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <h3 className="text-2xl font-bold text-blue-600 mb-6">Finance</h3>
-                {skills.finance.map((skill, index) => (
-                  <div key={index} className="mb-4">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-700">{skill.name}</span>
-                      <span className="text-blue-600">{skill.level}</span>
+              {Object.entries(skills).map(([category, skillList]) => (
+                <div key={category} className="bg-white p-8 rounded-xl shadow-md">
+                  <h3 className="text-2xl font-bold text-blue-600 mb-6 capitalize">{category}</h3>
+                  {skillList.map((skill, index) => (
+                    <div key={index} className="mb-4">
+                      <div className="flex justify-between mb-2">
+                        <span className="text-gray-700">{skill.name}</span>
+                        <span className="text-blue-600">{skill.level}</span>
+                      </div>
+                      <div className="h-2 bg-gray-200 rounded-full">
+                        <div
+                          className="h-2 bg-blue-600 rounded-full"
+                          style={{
+                            width: skill.level === 'Expert' ? '100%' :
+                                   skill.level === 'Advanced' ? '80%' : '60%'
+                          }}
+                        ></div>
+                      </div>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full">
-                      <div 
-                        className="h-2 bg-blue-600 rounded-full"
-                        style={{ 
-                          width: skill.level === 'Expert' ? '100%' : 
-                                 skill.level === 'Advanced' ? '80%' : '60%' 
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <h3 className="text-2xl font-bold text-blue-600 mb-6">Web3</h3>
-                {skills.web3.map((skill, index) => (
-                  <div key={index} className="mb-4">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-700">{skill.name}</span>
-                      <span className="text-blue-600">{skill.level}</span>
-                    </div>
-                    <div className="h-2 bg-gray-200 rounded-full">
-                      <div 
-                        className="h-2 bg-blue-600 rounded-full"
-                        style={{ 
-                          width: skill.level === 'Expert' ? '100%' : 
-                                 skill.level === 'Advanced' ? '80%' : '60%' 
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <h3 className="text-2xl font-bold text-blue-600 mb-6">Technical</h3>
-                {skills.technical.map((skill, index) => (
-                  <div key={index} className="mb-4">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-700">{skill.name}</span>
-                      <span className="text-blue-600">{skill.level}</span>
-                    </div>
-                    <div className="h-2 bg-gray-200 rounded-full">
-                      <div 
-                        className="h-2 bg-blue-600 rounded-full"
-                        style={{ 
-                          width: skill.level === 'Expert' ? '100%' : 
-                                 skill.level === 'Advanced' ? '80%' : '60%' 
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ))}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Education Section */}
         {activeSection === 'education' && (
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-4xl font-bold text-gray-800 mb-12">Education</h2>
             <div className="grid gap-8">
               {education.map((edu, index) => (
@@ -294,108 +271,120 @@ const [scrollProgress, setScrollProgress] = useState(0);
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Web3 Section */}
-{activeSection === 'web3' && (
-  <div>
-    <h2 className="text-4xl font-bold text-gray-800 mb-12">Web3 Experience</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div className="bg-white p-8 rounded-xl shadow-md">
-        <h3 className="text-2xl font-bold text-blue-600 mb-4">Crypto Trading & DeFi</h3>
-        <ul className="space-y-3">
-          {['Active participant in crypto markets since 2021',
-            'Personal experience with various DeFi protocols',
-            'Following market trends and macro events',
-            'Exploring NFT markets and communities'].map((point, idx) => (
-            <li key={idx} className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-              <span className="text-gray-700">{point}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="bg-white p-8 rounded-xl shadow-md">
-        <h3 className="text-2xl font-bold text-blue-600 mb-4">Community Engagement</h3>
-        <ul className="space-y-3">
-          {['Participated in Discord communities for emerging projects',
-            'Contributed to community management initiatives',
-            'Building knowledge through active participation',
-            'Following industry developments and trends'].map((point, idx) => (
-            <li key={idx} className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-              <span className="text-gray-700">{point}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  </div>
-)}
-        {/* Contact Section */}
-{activeSection === 'contact' && (
-  <div>
-    <h2 className="text-4xl font-bold text-gray-800 mb-12">Get In Touch</h2>
-    <div className="max-w-2xl mx-auto">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-white p-8 rounded-xl shadow-md"
-      >
-        {formState.succeeded ? (
-          <div className="text-green-600 text-center p-4 bg-green-50 rounded-lg">
-            Thank you for your message! I'll get back to you soon.
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2" htmlFor="name">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                required
-              />
+        {activeSection === 'web3' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-4xl font-bold text-gray-800 mb-12">Web3 Experience</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <h3 className="text-2xl font-bold text-blue-600 mb-4">Crypto Trading & DeFi</h3>
+                <ul className="space-y-3">
+                  {[
+                    'Active participant in crypto markets since 2021',
+                    'Personal experience with various DeFi protocols',
+                    'Following market trends and macro events',
+                    'Exploring NFT markets and communities'
+                  ].map((point, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                      <span className="text-gray-700">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <h3 className="text-2xl font-bold text-blue-600 mb-4">Community Engagement</h3>
+                <ul className="space-y-3">
+                  {[
+                    'Participated in Discord communities for emerging projects',
+                    'Contributed to community management initiatives',
+                    'Building knowledge through active participation',
+                    'Following industry developments and trends'
+                  ].map((point, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                      <span className="text-gray-700">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-2" htmlFor="email">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-2" htmlFor="message">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                required
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              disabled={formState.submitting}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400"
-            >
-              {formState.submitting ? 'Sending...' : 'Send Message'}
-            </button>
-          </form>
+          </motion.div>
         )}
-      </motion.div>
+
+        {/* Contact Section */}
+        {activeSection === 'contact' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-4xl font-bold text-gray-800 mb-12">Get In Touch</h2>
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                {formState.succeeded ? (
+                  <div className="text-green-600 text-center p-4 bg-green-50 rounded-lg">
+                    Thank you for your message! Ill get back to you soon.
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-2" htmlFor="name">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-2" htmlFor="email">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-2" htmlFor="message">
+                        Message
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        rows={4}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                        required
+                      ></textarea>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={formState.submitting}
+                      className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+                    >
+                      {formState.submitting ? 'Sending...' : 'Send Message'}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </main>
     </div>
-  </div>
-)}
+  );
+}
