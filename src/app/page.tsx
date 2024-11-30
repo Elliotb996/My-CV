@@ -1,14 +1,22 @@
 "use client";
+import { useForm } from '@formspree/react';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState('experience');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const [formState, handleSubmit] = useForm("mldeojog"); // Replace with
+const [scrollProgress, setScrollProgress] = useState(0);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const currentScroll = window.scrollY;
+      setScrollProgress((currentScroll / totalScroll));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   // Expanded work experience data
   const experiences = [
     {
@@ -91,7 +99,7 @@ export default function Home() {
     ],
     web3: [
       { name: "DeFi Protocols", level: "Intermediate" },
-      { name: "Crypto Trading", level: "Advanced" },
+      { name: "Crypto Trading", level: "Intermediate" },
       { name: "Community Management", level: "Intermediate" },
       { name: "Market Analysis", level: "Advanced" }
     ],
@@ -134,7 +142,15 @@ export default function Home() {
           </div>
         </div>
       </header>
-
+<div className="fixed top-0 left-0 w-full h-1 z-50">
+  <motion.div 
+    className="h-full bg-blue-600"
+    style={{ 
+      scaleX: scrollProgress,
+      transformOrigin: "0%" 
+    }}
+  />
+</div>
       {/* Navigation */}
       <nav className="sticky top-0 bg-white shadow-md z-10">
         <div className="container mx-auto px-6">
@@ -159,8 +175,13 @@ export default function Home() {
       {/* Main content */}
       <main className="container mx-auto px-6 py-16">
         {/* Experience Section */}
-        {activeSection === 'experience' && (
-          <div className="space-y-8">
+{activeSection === 'experience' && (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+    className="space-y-8"
+  >
             <h2 className="text-4xl font-bold text-gray-800 mb-12">Professional Experience</h2>
             <div className="grid gap-8">
               {experiences.map((exp, index) => (
@@ -277,121 +298,104 @@ export default function Home() {
         )}
 
         {/* Web3 Section */}
-        {activeSection === 'web3' && (
-          <div>
-            <h2 className="text-4xl font-bold text-gray-800 mb-12">Web3 Experience</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <h3 className="text-2xl font-bold text-blue-600 mb-4">Trading & Market Analysis</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-                    <span className="text-gray-700">Active trader in spot and leverage markets since 2021</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-                    <span className="text-gray-700">Experience with DeFi protocols and yield farming strategies</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-                    <span className="text-gray-700">NFT trading and market trend analysis</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-<span className="text-gray-700">Coordinated with development teams during project launches</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-                    <span className="text-gray-700">Maintained community engagement through market cycles</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-                    <span className="text-gray-700">Utilized OSINT techniques for market intelligence gathering</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <h3 className="text-2xl font-bold text-blue-600 mb-4">Technical Understanding</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-                    <span className="text-gray-700">Deep understanding of blockchain technology and consensus mechanisms</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-                    <span className="text-gray-700">Experience with various DeFi protocols and smart contracts</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
-                    <span className="text-gray-700">Familiar with different blockchain networks and their ecosystems</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Contact Section */}
-        {activeSection === 'contact' && (
-          <div>
-            <h2 className="text-4xl font-bold text-gray-800 mb-12">Get In Touch</h2>
-            <div className="max-w-2xl mx-auto">
-              <div className="bg-white p-8 rounded-xl shadow-md">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label className="block text-gray-700 font-medium mb-2" htmlFor="name">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-medium mb-2" htmlFor="email">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-medium mb-2" htmlFor="message">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                      required
-                    ></textarea>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                  >
-                    Send Message
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
+{activeSection === 'web3' && (
+  <div>
+    <h2 className="text-4xl font-bold text-gray-800 mb-12">Web3 Experience</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="bg-white p-8 rounded-xl shadow-md">
+        <h3 className="text-2xl font-bold text-blue-600 mb-4">Crypto Trading & DeFi</h3>
+        <ul className="space-y-3">
+          {['Active participant in crypto markets since 2021',
+            'Personal experience with various DeFi protocols',
+            'Following market trends and macro events',
+            'Exploring NFT markets and communities'].map((point, idx) => (
+            <li key={idx} className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+              <span className="text-gray-700">{point}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="bg-white p-8 rounded-xl shadow-md">
+        <h3 className="text-2xl font-bold text-blue-600 mb-4">Community Engagement</h3>
+        <ul className="space-y-3">
+          {['Participated in Discord communities for emerging projects',
+            'Contributed to community management initiatives',
+            'Building knowledge through active participation',
+            'Following industry developments and trends'].map((point, idx) => (
+            <li key={idx} className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+              <span className="text-gray-700">{point}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
-  );
-}
+  </div>
+)}
+        {/* Contact Section */}
+{activeSection === 'contact' && (
+  <div>
+    <h2 className="text-4xl font-bold text-gray-800 mb-12">Get In Touch</h2>
+    <div className="max-w-2xl mx-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white p-8 rounded-xl shadow-md"
+      >
+        {formState.succeeded ? (
+          <div className="text-green-600 text-center p-4 bg-green-50 rounded-lg">
+            Thank you for your message! I'll get back to you soon.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-gray-700 font-medium mb-2" htmlFor="name">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2" htmlFor="email">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2" htmlFor="message">
+                Message
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows={4}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                required
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              disabled={formState.submitting}
+              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+            >
+              {formState.submitting ? 'Sending...' : 'Send Message'}
+            </button>
+          </form>
+        )}
+      </motion.div>
+    </div>
+  </div>
+)}
